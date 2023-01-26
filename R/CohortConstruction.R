@@ -263,7 +263,7 @@ generateCohort <- function(cohortId = NULL,
       connection <- DatabaseConnector::connect(connectionDetails)
       on.exit(DatabaseConnector::disconnect(connection))
     }
-    ParallelLogger::logInfo(i, "/", nrow(cohortDefinitionSet), "- Generating cohort: ", cohortName)
+    rlang::inform(paste0(i, "/", nrow(cohortDefinitionSet), "- Generating cohort: ", cohortName))
     sql <- cohortDefinitionSet$sql[i]
 
     if (!isSubset) {
@@ -335,9 +335,11 @@ generateCohort <- function(cohortId = NULL,
       )
     }, error = function(e) {
       endTime <- lubridate::now()
-      ParallelLogger::logError("An error occurred while generating cohortName = ", cohortName, ". Error: ", e)
+      errMsg <- paste0("An error occurred while generating cohortName = ", cohortName, ". Error: ", e)
       if (stopIfError) {
-        stop()
+        rlang::abort(errMsg)
+      } else {
+        rlang::warn(errMsg)
       }
       return(list(
         generationStatus = "FAILED",

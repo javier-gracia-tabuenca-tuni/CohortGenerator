@@ -116,7 +116,7 @@ insertInclusionRuleNames <- function(connectionDetails = NULL,
 
   # Insert the inclusion rules
   if (nrow(inclusionRules) > 0) {
-    ParallelLogger::logInfo("Inserting inclusion rule names")
+    rlang::inform("Inserting inclusion rule names")
     DatabaseConnector::insertTable(
       connection = connection,
       databaseSchema = cohortDatabaseSchema,
@@ -152,7 +152,7 @@ getStatsTable <- function(connectionDetails,
     databaseId <- NULL
   }
 
-  ParallelLogger::logInfo("- Fetching data from ", table)
+  rlang::inform(paste0("- Fetching data from ", table))
   sql <- "SELECT {@database_id != ''}?{CAST('@database_id' as VARCHAR(255)) as database_id,} * FROM @cohort_database_schema.@table"
   data <- DatabaseConnector::renderTranslateQuerySql(
     sql = sql,
